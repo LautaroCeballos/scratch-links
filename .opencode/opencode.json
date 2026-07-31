@@ -1,0 +1,60 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "lsp": true,
+    "provider": {
+        "omniroute": {
+            "npm": "@ai-sdk/openai-compatible",
+            "name": "OmniRoute",
+            "options": {
+                "baseURL": "http://localhost:20128/v1",
+                "apiKey": "${OMNIROUTE_API_KEY}"
+            },
+            "models": {
+                "agy/claude-opus-4-6-thinking": {
+                    "name": "Claude Opus 4.6 Thinking (OMNIRoute)"
+                },
+                "gemini/gemini-3.5-flash": {
+                    "name": "Gemini 3.5 Flash (OMNIRoute)"
+                }
+            }
+        }
+    },
+    "mcp": {
+        "context7": {
+            "type": "remote",
+            "url": "https://mcp.context7.com/mcp",
+            "headers": {
+                "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+            }
+        },
+        "Figma": {
+            "type": "remote",
+            "url": "https://mcp.figma.com/mcp",
+            "enabled": true
+        },
+        "supabase": {
+            "type": "remote",
+            "url": "https://mcp.supabase.com/mcp?project_ref=${SUPABASE_PROJECT_REF}&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching%2Cstorage",
+            "enabled": true
+        },
+        "chrome-devtools": {
+            "type": "local",
+            "command": [
+                "npx",
+                "-y",
+                "chrome-devtools-mcp@latest"
+            ]
+        },
+        "TestSprite": {
+            "type": "local",
+            "command": [
+                "npx",
+                "-y",
+                "@testsprite/testsprite-mcp@latest"
+            ],
+            "environment": {
+                "API_KEY": "${TESTSPRITE_API_KEY}"
+            }
+        }
+    }
+}
