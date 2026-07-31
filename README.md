@@ -14,10 +14,9 @@ Demo en producción: **https://scratch-links.vercel.app/**
 - ✅ Acepta distintos formatos de link: URL completa, `/projects/123/editor`, `/projects/123/fullscreen`, con query params, **ID pelado** (`1364131636`) e incluso **texto extra** pegado desde un buscador.
 - ✅ Si el proyecto es público, muestra el **juego embebido** con el embed oficial de Scratch (485×402, escalable).
 - ✅ Verificación automática con **debounce de 500 ms** mientras escribís/pegás.
-- ✅ Soporte de **precarga** con el parámetro `?project=<link>` (ideal para iframes).
 - ✅ Estados claros de UI: vacío, verificando, público, privado, link inválido y error de red (con reintento manual).
 - ✅ Responsive (funciona desde 375 px), accesible (`aria-live`, `aria-invalid`, focus visible, `prefers-reduced-motion`) y sin navegación interna.
-- ✅ Al visitar la web directamente se muestra una sección con el **código de inserción**; esa sección **desaparece automáticamente cuando la web está embebida** en un iframe.
+- ✅ En vista directa, el verificador y el **código de inserción** se muestran **lado a lado** (apilados en pantallas angostas); al estar embebida en un iframe, la sección de inserción **desaparece** y solo queda el verificador.
 
 ---
 
@@ -54,7 +53,8 @@ Usuario pega un link
    - El navegador no puede llamar a `api.scratch.mit.edu` por CORS, por eso el fetch vive en el servidor (Node runtime).
    - Timeout de 8 s y caché `s-maxage=300` + `stale-while-revalidate` en respuestas exitosas.
 3. **`app/widget.tsx`** — widget cliente: debounce de 500 ms, `AbortController` para cancelar verificaciones previas, 6 estados de UI y render del iframe oficial solo cuando el proyecto es público.
-4. **`app/embed-info.tsx`** — sección de inserción visible solo en vista directa: detecta si la web está embebida comparando `window.self !== window.top` y en ese caso no renderiza nada.
+4. **`app/embed-info.tsx`** — información de inserción visible solo en vista directa: detecta si la web está embebida comparando `window.self !== window.top` y en ese caso no renderiza nada.
+5. **`app/page.tsx`** — layout server: coloca el verificador y la información de inserción **lado a lado** (`page__cols`, 2 columnas en desktop, apiladas en pantallas angostas).
 
 ---
 
@@ -63,9 +63,8 @@ Usuario pega un link
 | URL | Comportamiento |
 |---|---|
 | `https://scratch-links.vercel.app/` | El usuario pega su propio link y verifica |
-| `https://scratch-links.vercel.app/?project=https://scratch.mit.edu/projects/1364131636` | Precarga y verifica ese proyecto al abrir |
 
-Formato del parámetro: puede ser un link completo, un ID pelado o texto con el link adentro. Se usa `?project=<texto>` tal cual lo pegaría un usuario.
+El alumno siempre es quien pega el link del proyecto; no hay URL con proyecto precargado.
 
 ---
 
@@ -87,19 +86,7 @@ El widget es una app completa, así que se incrusta con un `<iframe>`:
 
 **Dimensiones**: el widget mide 520 × ~709 px con el juego cargado; `520 × 740` cubre todo sin scroll interno. En 375 px el widget se adapta sin romperse (el ancho mínimo recomendado es 340 px).
 
-**Con proyecto precargado** (el alumno solo debe presionar ▶):
-
-```html
-<iframe
-  src="https://scratch-links.vercel.app/?project=https://scratch.mit.edu/projects/1364131636"
-  width="520"
-  height="740"
-  style="border: 0; overflow: hidden;"
-  title="Verificador de proyectos de Scratch"
-  allow="autoplay"
-  allowfullscreen
-></iframe>
-```
+> Al abrir la web directamente, el código de inserción se muestra a la derecha del verificador (o debajo en pantallas angostas). Dentro del iframe, solo se ve el verificador.
 
 ### En Genially
 
@@ -149,7 +136,7 @@ scratch-links/
 │   ├── embed-info.tsx          # sección de inserción (solo vista directa)
 │   ├── globals.css             # tokens + estilos (CSS puro, BEM)
 │   ├── layout.tsx              # <html lang="es">, Nunito, metadata noindex
-│   ├── page.tsx                # wrapper server + Suspense
+│   ├── page.tsx                # layout server: verificador + info lado a lado
 │   └── widget.tsx              # widget cliente (debounce, estados, embed)
 ├── lib/
 │   └── scratch.ts              # parseo de links + constantes del embed

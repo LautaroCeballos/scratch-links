@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import {
   EMBED_WIDTH,
   EMBED_HEIGHT,
@@ -137,10 +136,6 @@ export default function ScratchWidget() {
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const bootstrapped = useRef(false);
-
-  const searchParams = useSearchParams();
-  const initialProject = searchParams.get("project");
 
   const runCheck = useCallback(async (raw: string) => {
     const projectId = extractProjectId(raw);
@@ -196,13 +191,6 @@ export default function ScratchWidget() {
     };
   }, [input, runCheck]);
 
-  // Precarga desde ?project=<link> (una sola vez al montar).
-  useEffect(() => {
-    if (bootstrapped.current || !initialProject) return;
-    bootstrapped.current = true;
-    setInput(initialProject);
-  }, [initialProject]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
@@ -213,7 +201,7 @@ export default function ScratchWidget() {
   const checking = state.status === "checking";
 
   return (
-    <main className="widget">
+    <section className="widget" aria-label="Verificador de proyectos de Scratch">
       <div className="widget__card">
         <header className="widget__header">
           <span className="widget__logo">
@@ -332,6 +320,6 @@ export default function ScratchWidget() {
           )}
         </div>
       </div>
-    </main>
+    </section>
   );
 }
