@@ -1,0 +1,364 @@
+/* ============================================================
+   Scratch Links · Widget
+   Tokens + estilos de la herramienta embebible.
+   Sin framework CSS: variables en :root y BEM plano.
+   ============================================================ */
+
+:root {
+  /* Superficies */
+  --bg: #f4f7fb;
+  --card: #ffffff;
+
+  /* Texto */
+  --ink-strong: #232b38;
+  --ink: #3c4657;
+  --muted: #7a8294;
+
+  /* Líneas */
+  --border: #e3e8f0;
+  --border-strong: #cbd4e0;
+
+  /* Acento (azul Scratch) */
+  --accent: #4d97ff;
+  --accent-hover: #3373cc;
+  --accent-soft: #e8f1ff;
+
+  /* Estado éxito (verde Scratch) */
+  --success-bg: #e5f6e9;
+  --success-ink: #187a3d;
+  --success-border: #b9e3c4;
+
+  /* Estado privado / inválido (rojo Scratch) */
+  --danger-bg: #ffe9ee;
+  --danger-ink: #c2254a;
+  --danger-border: #f5bdc9;
+
+  /* Estado error de verificación (ámbar) */
+  --warn-bg: #fff4df;
+  --warn-ink: #8a5f00;
+  --warn-border: #f0d9a8;
+
+  --radius: 16px;
+  --shadow: 0 1px 2px rgba(23, 43, 77, 0.04), 0 8px 24px rgba(23, 43, 77, 0.07);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-nunito), "Segoe UI", system-ui, -apple-system,
+    sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- Layout ---------- */
+
+.widget {
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.widget__card {
+  width: min(100%, 520px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+/* ---------- Header ---------- */
+
+.widget__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.widget__logo {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--accent-soft);
+}
+
+.widget__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink-strong);
+}
+
+.widget__subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* ---------- Form ---------- */
+
+.widget__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-strong);
+  margin-bottom: 8px;
+}
+
+.widget__field {
+  position: relative;
+}
+
+.widget__input {
+  width: 100%;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink-strong);
+  background: #fbfcfe;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px 12px 42px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.widget__input::placeholder {
+  color: #a6adbd;
+}
+
+.widget__input:hover {
+  border-color: var(--border-strong);
+}
+
+.widget__input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.widget__input[aria-invalid="true"] {
+  border-color: var(--danger-ink);
+  background: #fffdfd;
+}
+
+.widget__input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 4px var(--danger-bg);
+}
+
+.widget__input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.widget__hint {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.widget__hint code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 12px;
+  background: #f1f4f9;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 6px;
+  color: var(--ink);
+}
+
+/* ---------- Resultado ---------- */
+
+.widget__result {
+  margin-top: 20px;
+  border-top: 1px dashed var(--border);
+  padding-top: 18px;
+  min-height: 48px;
+}
+
+.widget__empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.widget__checking {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--accent-soft);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Badges */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+
+.badge svg {
+  flex: none;
+}
+
+.badge--success {
+  background: var(--success-bg);
+  color: var(--success-ink);
+  border: 1px solid var(--success-border);
+}
+
+.badge--danger {
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+  border: 1px solid var(--danger-border);
+}
+
+.badge--warn {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+  border: 1px solid var(--warn-border);
+}
+
+/* Ayuda / mensajes secundarios */
+
+.widget__help {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.widget__help strong {
+  color: var(--ink);
+}
+
+.widget__retry {
+  margin-top: 14px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--accent);
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.widget__retry:hover {
+  background: var(--accent-hover);
+}
+
+.widget__retry:focus-visible {
+  outline: 3px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+.widget__retry:active {
+  transform: translateY(1px);
+}
+
+/* ---------- Embed ---------- */
+
+.embed {
+  margin-top: 20px;
+}
+
+.embed__inner {
+  width: min(100%, 485px);
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #ffffff;
+}
+
+.embed iframe {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 485 / 402;
+  border: 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 480px) {
+  .widget {
+    padding: 16px 12px;
+  }
+
+  .widget__card {
+    padding: 20px 16px;
+  }
+
+  .widget__title {
+    font-size: 18px;
+  }
+}
+
+/* ---------- Accesibilidad ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 1.4s;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
