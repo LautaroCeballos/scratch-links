@@ -118,7 +118,7 @@ body {
   background: #fbfcfe;
   border: 2px solid var(--border-strong);
   border-radius: 10px;
-  padding: 12px 48px 12px 46px;
+  padding: 12px 14px 12px 46px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease,
     background 0.15s ease;
 }
@@ -154,35 +154,6 @@ body {
   translate: 0 -50%;
   color: var(--muted);
   pointer-events: none;
-}
-
-.widget__paste {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  translate: 0 -50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease;
-}
-
-.widget__paste:hover {
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-
-.widget__paste:focus-visible {
-  outline: 3px solid var(--accent-soft);
-  outline-offset: 2px;
 }
 
 /* ---------- Resultado ---------- */
