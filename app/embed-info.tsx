@@ -21,10 +21,21 @@ export default function EmbedInfo() {
   // Inicializamos como "embebida" para que la sección nunca haga flash
   // dentro de un iframe anfitrión; el effect la revela en vista directa.
   const [embedded, setEmbedded] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setEmbedded(window.self !== window.top);
   }, []);
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(EMBED_CODE);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   if (embedded) return null;
 
@@ -37,6 +48,14 @@ export default function EmbedInfo() {
         <pre className="embed-info__code">
           <code>{EMBED_CODE}</code>
         </pre>
+        <button
+          type="button"
+          className={`embed-info__copy${copied ? " is-copied" : ""}`}
+          onClick={copyCode}
+          aria-live="polite"
+        >
+          {copied ? "¡Copiado!" : "Copiar código"}
+        </button>
       </article>
       <p className="embed-info__note">
         Pegá el código en Genially (Insertar → HTML) o en cualquier web que
