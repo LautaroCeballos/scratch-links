@@ -76,7 +76,7 @@ body {
 
 .widget__card {
   background: var(--card);
-  border: 1.5px solid var(--border);
+  border: 2px solid var(--border-strong);
   border-radius: var(--radius);
   padding: 20px 22px;
 }
@@ -85,8 +85,8 @@ body {
 
 .widget__label {
   display: block;
-  font-size: 12.5px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
   color: var(--ink-strong);
   margin-bottom: 6px;
 }
@@ -98,12 +98,12 @@ body {
 .widget__input {
   width: 100%;
   font: inherit;
-  font-size: 14px;
+  font-size: 17px;
   color: var(--ink-strong);
   background: #fbfcfe;
-  border: 1.5px solid var(--border);
+  border: 2px solid var(--border-strong);
   border-radius: 10px;
-  padding: 10px 12px 10px 40px;
+  padding: 12px 14px 12px 46px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease,
     background 0.15s ease;
 }
@@ -149,19 +149,11 @@ body {
   min-height: 32px;
 }
 
-.widget__empty {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
-  color: var(--muted);
-}
-
 .widget__checking {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--ink);
 }
@@ -189,14 +181,14 @@ body {
   height: auto;
   margin-top: 4px;
   border-radius: 10px;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border-strong);
   background: #ffffff;
 }
 
 .widget__retry {
   margin-top: 6px;
   font: inherit;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 700;
   color: #ffffff;
   background: var(--accent);
@@ -231,7 +223,7 @@ body {
   margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border-strong);
   background: #ffffff;
 }
 
@@ -248,14 +240,14 @@ body {
 .embed-info {
   width: min(100%, 440px);
   background: var(--card);
-  border: 1.5px solid var(--border);
+  border: 2px solid var(--border-strong);
   border-radius: var(--radius);
   padding: 16px 20px;
 }
 
 .embed-info h2 {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.3;
   font-weight: 800;
   color: var(--ink-strong);
@@ -267,7 +259,7 @@ body {
 
 .embed-info__item h3 {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.3;
   font-weight: 800;
   color: var(--ink);
@@ -275,7 +267,7 @@ body {
 
 .embed-info__item p {
   margin: 2px 0 0;
-  font-size: 12.5px;
+  font-size: 13.5px;
   line-height: 1.4;
   color: var(--muted);
 }
@@ -284,11 +276,11 @@ body {
   margin: 8px 0 0;
   padding: 12px 14px;
   background: #f7f9fc;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   overflow-x: auto;
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 11.5px;
+  font-size: 12.5px;
   line-height: 1.55;
   color: var(--ink-strong);
   white-space: pre-wrap;
@@ -297,14 +289,14 @@ body {
 
 .embed-info__note {
   margin: 10px 0 0;
-  font-size: 12.5px;
+  font-size: 13.5px;
   line-height: 1.5;
   color: var(--muted);
 }
 
 .embed-info__note code {
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 11.5px;
+  font-size: 12.5px;
   background: #f1f4f9;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -315,11 +307,11 @@ body {
 .embed-info__copy {
   margin-top: 8px;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--accent);
   background: var(--accent-soft);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
