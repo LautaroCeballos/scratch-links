@@ -11,7 +11,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Scratch Links · Verificador de proyectos",
   description:
-    "Pegá el link de un proyecto de Scratch y verificá al instante si es público. Widget embebible para Genially.",
+    "Verificá que tu proyecto de Scratch sea público y no sea el original de la competencia antes de entregarlo. Widget embebible para Genially.",
   robots: { index: false, follow: false },
 };
 

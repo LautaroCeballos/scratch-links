@@ -6,6 +6,7 @@ import {
   EMBED_HEIGHT,
   EMBED_URL,
   extractProjectId,
+  getOriginalChallenge,
 } from "@/lib/scratch";
 
 const DEBOUNCE_MS = 500;
@@ -13,23 +14,13 @@ const DEBOUNCE_MS = 500;
 type CheckState =
   | { status: "idle" }
   | { status: "checking"; projectId: string }
+  | { status: "original"; challenge: number; projectId: string }
   | { status: "public"; projectId: string }
   | { status: "private"; projectId: string }
   | { status: "invalid" }
   | { status: "error"; projectId: string };
 
 /* ---------- Iconos inline (estilo lucide, MIT) ---------- */
-
-function ScratchLogo() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="6" cy="6" r="4" fill="#4D97FF" />
-      <circle cx="18" cy="6" r="4" fill="#9966FF" />
-      <circle cx="6" cy="18" r="4" fill="#FFAB19" />
-      <circle cx="18" cy="18" r="4" fill="#59C059" />
-    </svg>
-  );
-}
 
 function LinkIcon() {
   return (
@@ -47,63 +38,6 @@ function LinkIcon() {
     >
       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-function CrossIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
-    </svg>
-  );
-}
-
-function AlertIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-      <path d="M12 9v4" />
-      <path d="M12 17h.01" />
     </svg>
   );
 }
@@ -133,6 +67,7 @@ function InfoIcon() {
 export default function ScratchWidget() {
   const [input, setInput] = useState("");
   const [state, setState] = useState<CheckState>({ status: "idle" });
+  const [showEmbed, setShowEmbed] = useState(false);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -144,10 +79,19 @@ export default function ScratchWidget() {
       return;
     }
 
+    // Si es un proyecto original de la competencia, avisamos sin llamar a la API:
+    // el estudiante debe entregar SU versión, no el original.
+    const challenge = getOriginalChallenge(projectId);
+    if (challenge !== null) {
+      setState({ status: "original", challenge, projectId });
+      return;
+    }
+
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
     setState({ status: "checking", projectId });
+    setShowEmbed(false);
 
     try {
       const res = await fetch(
@@ -203,20 +147,8 @@ export default function ScratchWidget() {
   return (
     <section className="widget" aria-label="Verificador de proyectos de Scratch">
       <div className="widget__card">
-        <header className="widget__header">
-          <span className="widget__logo">
-            <ScratchLogo />
-          </span>
-          <div>
-            <h1 className="widget__title">Scratch Links</h1>
-            <p className="widget__subtitle">
-              Verificá si un proyecto de Scratch es público y miralo al instante.
-            </p>
-          </div>
-        </header>
-
         <label className="widget__label" htmlFor="scratch-input">
-          Link del proyecto
+          Link de tu proyecto
         </label>
         <div className="widget__field">
           <LinkIcon />
@@ -231,15 +163,8 @@ export default function ScratchWidget() {
             value={input}
             onChange={handleChange}
             aria-invalid={invalid || undefined}
-            aria-describedby={
-              invalid ? "scratch-feedback scratch-hint" : "scratch-hint"
-            }
           />
         </div>
-        <p className="widget__hint" id="scratch-hint">
-          Probá con{" "}
-          <code>https://scratch.mit.edu/projects/1364131636</code>
-        </p>
 
         <div
           className="widget__result"
@@ -250,7 +175,7 @@ export default function ScratchWidget() {
           {state.status === "idle" && (
             <div className="widget__empty">
               <InfoIcon />
-              Pegá el link y verificamos la visibilidad automáticamente.
+              Pegá el link de tu proyecto para verificar la entrega!
             </div>
           )}
 
@@ -261,36 +186,49 @@ export default function ScratchWidget() {
             </div>
           )}
 
+          {state.status === "original" && (
+            <img
+              className="widget__notify-img"
+              src={`/error-proyecto-original-${state.challenge}.png`}
+              alt={`Imagen explicativa: no entregar el proyecto original del Desafío ${state.challenge}`}
+              width={1536}
+              height={1024}
+              loading="lazy"
+            />
+          )}
+
           {state.status === "invalid" && (
-            <div className="badge badge--danger" id="scratch-feedback">
-              <CrossIcon />
-              Link de Scratch no válido
-            </div>
+            <img
+              className="widget__notify-img"
+              src="/link-invalido.png"
+              alt="Imagen explicativa: el link ingresado no es de Scratch, pegá el enlace de tu proyecto"
+              width={1536}
+              height={1024}
+              loading="lazy"
+            />
           )}
 
           {state.status === "private" && (
-            <>
-              <div className="badge badge--danger">
-                <CrossIcon />
-                Proyecto privado o no existe
-              </div>
-              <p className="widget__help">
-                Para compartirlo: abrí el proyecto en Scratch y activá{" "}
-                <strong>Compartir</strong> en la barra superior.
-              </p>
-            </>
+            <img
+              className="widget__notify-img"
+              src="/proyecto-no-compartido.png"
+              alt="Imagen explicativa: tu proyecto está privado, activá Compartir para entregarlo"
+              width={1536}
+              height={1024}
+              loading="lazy"
+            />
           )}
 
           {state.status === "error" && (
             <>
-              <div className="badge badge--warn">
-                <AlertIcon />
-                No se pudo verificar
-              </div>
-              <p className="widget__help">
-                Hubo un problema contactando a Scratch. Revisá tu conexión y
-                probá de nuevo.
-              </p>
+              <img
+                className="widget__notify-img"
+                src="/no-se-pudo-verificar.png"
+                alt="Imagen explicativa: no se pudo contactar a Scratch, revisá tu conexión e intentá de nuevo"
+                width={1536}
+                height={1024}
+                loading="lazy"
+              />
               <button type="button" className="widget__retry" onClick={retry}>
                 Intentar de nuevo
               </button>
@@ -299,23 +237,39 @@ export default function ScratchWidget() {
 
           {state.status === "public" && (
             <>
-              <div className="badge badge--success">
-                <CheckIcon />
-                Proyecto público
-              </div>
-              <div className="embed">
-                <div className="embed__inner">
-                  <iframe
-                    src={EMBED_URL(state.projectId)}
-                    title="Proyecto de Scratch"
-                    width={EMBED_WIDTH}
-                    height={EMBED_HEIGHT}
-                    allow="autoplay"
-                    allowFullScreen
-                    scrolling="no"
-                  />
+              {showEmbed ? (
+                <div className="embed">
+                  <div className="embed__inner">
+                    <iframe
+                      src={EMBED_URL(state.projectId)}
+                      title="Vista previa del proyecto de Scratch"
+                      width={EMBED_WIDTH}
+                      height={EMBED_HEIGHT}
+                      allow="autoplay"
+                      allowFullScreen
+                      scrolling="no"
+                      onError={() => setShowEmbed(false)}
+                    />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <img
+                  className="widget__notify-img"
+                  src="/enlace-verificado.png"
+                  alt="Imagen de éxito: tu enlace fue verificado y está listo para entregar"
+                  width={1536}
+                  height={1024}
+                  loading="lazy"
+                />
+              )}
+              <button
+                type="button"
+                className="widget__retry"
+                onClick={() => setShowEmbed((v) => !v)}
+                aria-expanded={showEmbed}
+              >
+                {showEmbed ? "Ocultar vista previa" : "Ver vista previa"}
+              </button>
             </>
           )}
         </div>
