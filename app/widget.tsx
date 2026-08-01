@@ -234,7 +234,7 @@ export default function ScratchWidget() {
             <img
               className="widget__notify-img"
               src="/link-invalido.png"
-              alt="Imagen explicativa: el link ingresado no es de Scratch, pegá el enlace de tu proyecto"
+              alt="Imagen explicativa: el link ingresado no es un link de proyecto de Scratch, pegá el link completo https://scratch.mit.edu/projects/ID"
               width={1536}
               height={1024}
               loading="lazy"

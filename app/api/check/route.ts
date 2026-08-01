@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
   if (!VALID_PROJECT_ID.test(projectId)) {
     return NextResponse.json(
-      { error: "id_invalido", message: "projectId debe ser numérico" },
+      { error: "id_invalido", message: "projectId debe tener entre 9 y 10 dígitos" },
       { status: 400 }
     );
   }

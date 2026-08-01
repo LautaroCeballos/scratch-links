@@ -11,7 +11,7 @@ Demo en producción: **https://scratch-links.vercel.app/**
 ## Funcionalidades
 
 - ✅ Verifica si un proyecto de Scratch es **público** o **privado/inexistente** (desde el servidor, evita el bloqueo de CORS del navegador).
-- ✅ Acepta distintos formatos de link: URL completa, `/projects/123/editor`, `/projects/123/fullscreen`, con query params, **ID pelado** (`1364131636`) e incluso **texto extra** pegado desde un buscador.
+- ✅ Acepta links completos de Scratch: `https://scratch.mit.edu/projects/1234567890`, opcionalmente con `/`, `/editor` o `/fullscreen`. El ID debe tener **9–10 dígitos**. Otros formatos (ID pelado, texto extra, query params, otra longitud de ID) → **link inválido**.
 - ✅ Si el proyecto es público, muestra el **juego embebido** con el embed oficial de Scratch (485×402, escalable).
 - ✅ Verificación automática con **debounce de 500 ms** mientras escribís/pegás.
 - ✅ Estados claros de UI: vacío, verificando, público, privado, link inválido y error de red (con reintento manual).
@@ -43,7 +43,7 @@ Usuario pega un link
         │                                   └──────────────────────┘
         ▼
 { public: true } → renderiza iframe del juego
-{ public: false } → badge "Proyecto privado o no existe"
+{ public: false } → badge "Proyecto privado"
 ```
 
 1. **`lib/scratch.ts`** — parseo de links de Scratch y constantes del embed.
@@ -106,8 +106,8 @@ El widget es una app completa, así que se incrusta con un `<iframe>`:
 | Respuesta | Significado |
 |---|---|
 | `200 { "public": true }` | El proyecto existe y es público |
-| `200 { "public": false }` | Privado, no compartido o inexistente (404 de Scratch) |
-| `400 { "error": "id_invalido" }` | `projectId` no es numérico |
+| `200 { "public": false }` | Privado o no disponible (404 de Scratch) |
+| `400 { "error": "id_invalido" }` | `projectId` debe tener entre 9 y 10 dígitos |
 | `502 { "error": "no_se_pudo_verificar" }` | Error de red o Scratch respondió un estado inesperado |
 
 ---

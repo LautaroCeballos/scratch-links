@@ -29,30 +29,27 @@ export function getOriginalChallenge(projectId: string): number | null {
   return found ? found.challenge : null;
 }
 
-/** Valida que un projectId sean solo dígitos (defensa server-side). */
-export const VALID_PROJECT_ID = /^\d{1,20}$/;
+/** Valida que un projectId tenga 9–10 dígitos (defensa server-side). */
+export const VALID_PROJECT_ID = /^\d{9,10}$/;
 
 /**
- * Patrones aceptados:
- * - "https://scratch.mit.edu/projects/1364131636" (con o sin subdominio www)
- * - ".../projects/123/editor", ".../projects/123/fullscreen"
- * - con "/" final o query params (".../projects/123?foo=bar")
- * - texto extra pegado desde un buscador (el patrón matchea en cualquier parte)
- * - ID pelado: "1364131636"
+ * Formatos aceptados (URL completa, anclada al inicio y fin):
+ * - "https://scratch.mit.edu/projects/1234567890"
+ * - "https://www.scratch.mit.edu/projects/1234567890" (con subdominio www)
+ * - ".../projects/1234567890/" (con "/" final)
+ * - ".../projects/1234567890/editor", ".../projects/1234567890/fullscreen"
  *
- * Devuelve el projectId como string, o null si el input no es un link válido.
+ * El ID debe tener entre 9 y 10 dígitos.
+ * No se aceptan: ID pelado, texto extra, query params, otros dominios
+ * ni longitudes de ID fuera de rango. Devuelve null en esos casos.
  */
-const PROJECT_URL_PATTERN = /(?:scratch\.mit\.edu\/)?projects\/(\d+)/;
-const BARE_ID_PATTERN = /^\d+$/;
+const PROJECT_URL_PATTERN =
+  /^https?:\/\/(?:www\.)?scratch\.mit\.edu\/projects\/(\d{9,10})\/?(?:editor|fullscreen)?$/;
 
 export function extractProjectId(input: string): string | null {
-  const trimmed = input.trim();
-  if (!trimmed) return null;
+  const normalized = input.trim().toLowerCase();
+  if (!normalized) return null;
 
-  const match = trimmed.match(PROJECT_URL_PATTERN);
-  if (match) return match[1];
-
-  if (BARE_ID_PATTERN.test(trimmed)) return trimmed;
-
-  return null;
+  const match = normalized.match(PROJECT_URL_PATTERN);
+  return match ? match[1] : null;
 }

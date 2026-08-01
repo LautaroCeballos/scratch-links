@@ -46,8 +46,9 @@ scratch-links/
 
 ### `lib/scratch.ts`
 - `extractProjectId(input): string | null`
-  - Acepta: `https://scratch.mit.edu/projects/1364131636`, `/projects/123/editor`, `/fullscreen`, con `/` final, con query params, o el ID pelado.
-  - Regex: `/(?:scratch\.mit\.edu\/)?projects\/(\d+)/` + fallback a `^\d+$`.
+  - Acepta solo URL completa: `https://scratch.mit.edu/projects/1364131636`, con `www.` o `/` final opcional, y las variantes `/editor` y `/fullscreen`. El ID debe tener **9–10 dígitos**.
+  - No acepta ID pelado, texto extra ni query params → devuelve `null` (link inválido).
+  - Regex: `/^https?:\/\/(?:www\.)?scratch\.mit\.edu\/projects\/(\d{9,10})\/?(?:editor|fullscreen)?$/`.
 - `EMBED_URL = (id) => `https://scratch.mit.edu/projects/${id}/embed``
 - Constantes: `EMBED_WIDTH = 485`, `EMBED_HEIGHT = 402`.
 
@@ -70,12 +71,12 @@ scratch-links/
   - Soporte de `?project=` al cargar (solo client; `useSearchParams` envuelto en `Suspense`).
 
 ## 6. Casos borde
-- Link pegado con texto extra (ej. pegado desde un buscador).
-- Proyecto con ID válido pero **privado** (404) → se informa como no público.
-- Proyecto **inexistente** (404) → mismo mensaje (la API no distingue; aceptable).
+- Link que no sigue la construcción `https://scratch.mit.edu/projects/ID` (texto suelto, ID pelado, otro dominio, query params) → link inválido.
+- ID con longitud fuera de 9–10 dígitos → link inválido.
+- Proyecto con ID válido pero **privado** (404) → badge "Proyecto privado".
+- Proyecto **inexistente** (404) → mismo cartel (la API no distingue; aceptable).
 - Red sin conexión a Scratch → mensaje de error de verificación (no "privado").
 - Input vacío → estado idle, sin resultados.
-- Caracteres no numéricos en el ID → link inválido.
 
 ## 7. Embed en Genially
 1. Deploy a Vercel → `https://<app>.vercel.app`.
