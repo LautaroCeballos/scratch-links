@@ -168,7 +168,7 @@ export default function ScratchWidget() {
     <section className="widget" aria-label="Verificador de proyectos de Scratch">
       <div className={`widget__card${cardState}`}>
         <label className="widget__label" htmlFor="scratch-input">
-          Link de tu proyecto
+          Pegá aquí el link de tu proyecto
         </label>
         <div className="widget__field">
           <LinkIcon />
