@@ -42,26 +42,6 @@ function LinkIcon() {
   );
 }
 
-function InfoIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M12 16v-4" />
-      <path d="M12 8h.01" />
-    </svg>
-  );
-}
-
 /* ---------- Widget ---------- */
 
 export default function ScratchWidget() {
@@ -173,10 +153,14 @@ export default function ScratchWidget() {
           aria-atomic="true"
         >
           {state.status === "idle" && (
-            <div className="widget__empty">
-              <InfoIcon />
-              Pegá el link de tu proyecto para verificar la entrega!
-            </div>
+            <img
+              className="widget__notify-img"
+              src="/pegar-enlace.png"
+              alt="Pegá el link de tu proyecto para verificar la entrega"
+              width={1536}
+              height={1024}
+              loading="lazy"
+            />
           )}
 
           {checking && (
