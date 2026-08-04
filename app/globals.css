@@ -77,6 +77,7 @@ body {
 
 .widget {
   width: min(100%, 760px);
+  container-type: inline-size;
 }
 
 .widget__card {
@@ -874,5 +875,154 @@ html.is-embedded body {
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Escala proporcional en contenedores grandes ----------
+   El widget (embebido en Genially) puede ocupar más de 760px de ancho.
+   A partir de esos tamaños se agrandan letras, textos, links y botones
+   de forma proporcional al ancho del contenedor. */
+
+@container (min-width: 900px) {
+  .widget__label {
+    font-size: 18px;
+  }
+
+  .widget__input {
+    font-size: 18px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+  }
+
+  .widget__help-text,
+  .widget__help-list li {
+    font-size: 16px;
+  }
+
+  .widget__feedback-success {
+    font-size: 18px;
+  }
+
+  .widget__form-success {
+    font-size: 20px;
+  }
+
+  .widget__feedback-error {
+    font-size: 17px;
+  }
+
+  .widget__checking {
+    font-size: 17px;
+  }
+
+  .widget__submit {
+    font-size: 18px;
+    padding: 14px 18px;
+  }
+
+  .widget__preview-toggle {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .widget__retry {
+    font-size: 16px;
+    padding: 10px 16px;
+  }
+}
+
+@container (min-width: 1100px) {
+  .widget__label {
+    font-size: 21px;
+  }
+
+  .widget__input {
+    font-size: 21px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+
+  .widget__help-text,
+  .widget__help-list li {
+    font-size: 19px;
+  }
+
+  .widget__feedback-success {
+    font-size: 21px;
+  }
+
+  .widget__form-success {
+    font-size: 23px;
+  }
+
+  .widget__feedback-error {
+    font-size: 20px;
+  }
+
+  .widget__checking {
+    font-size: 20px;
+  }
+
+  .widget__submit {
+    font-size: 21px;
+    padding: 16px 22px;
+  }
+
+  .widget__preview-toggle {
+    font-size: 19px;
+    padding: 12px 24px;
+  }
+
+  .widget__retry {
+    font-size: 19px;
+    padding: 12px 20px;
+  }
+}
+
+@container (min-width: 1400px) {
+  .widget__label {
+    font-size: 25px;
+  }
+
+  .widget__input {
+    font-size: 25px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  .widget__help-text,
+  .widget__help-list li {
+    font-size: 23px;
+  }
+
+  .widget__feedback-success {
+    font-size: 25px;
+  }
+
+  .widget__form-success {
+    font-size: 28px;
+  }
+
+  .widget__feedback-error {
+    font-size: 24px;
+  }
+
+  .widget__checking {
+    font-size: 24px;
+  }
+
+  .widget__submit {
+    font-size: 25px;
+    padding: 19px 26px;
+  }
+
+  .widget__preview-toggle {
+    font-size: 23px;
+    padding: 14px 28px;
+  }
+
+  .widget__retry {
+    font-size: 23px;
+    padding: 14px 24px;
   }
 }
