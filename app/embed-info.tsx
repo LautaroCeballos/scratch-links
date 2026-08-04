@@ -14,20 +14,14 @@ export default function EmbedInfo() {
   // dentro de un iframe anfitrión; el effect la revela en vista directa.
   const [embedded, setEmbedded] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [botonTexto, setBotonTexto] = useState("Ir a mi proyecto");
-  const [botonLink, setBotonLink] = useState(
-    "https://scratch.mit.edu/projects/1234567890"
-  );
+  const [botonTexto, setBotonTexto] = useState("");
+  const [botonLink, setBotonLink] = useState("");
 
   useEffect(() => {
     setEmbedded(window.self !== window.top);
   }, []);
 
   const embedCode = useMemo(() => {
-    const attrs = botonTexto && botonLink
-      ? `  boton_texto="${botonTexto}"
-  boton_link="${botonLink}"`
-      : "";
     const qs = botonTexto && botonLink
       ? `?boton_texto=${encodeURIComponent(botonTexto)}&boton_link=${encodeURIComponent(botonLink)}`
       : "";
@@ -39,7 +33,6 @@ export default function EmbedInfo() {
   title="Verificador de proyectos de Scratch"
   allow="autoplay"
   allowfullscreen
-${attrs}
 ></iframe>`;
   }, [botonTexto, botonLink]);
 
@@ -69,7 +62,7 @@ ${attrs}
               className="embed-info__input"
               value={botonTexto}
               onChange={(e) => setBotonTexto(e.target.value)}
-              placeholder="Ir a mi proyecto"
+              placeholder="Ej: Ir a mi proyecto"
             />
           </label>
           <label>
@@ -79,7 +72,7 @@ ${attrs}
               className="embed-info__input"
               value={botonLink}
               onChange={(e) => setBotonLink(e.target.value)}
-              placeholder="https://scratch.mit.edu/projects/1234567890"
+              placeholder="Ej: https://scratch.mit.edu/projects/1234567890"
             />
           </label>
         </div>
@@ -97,7 +90,9 @@ ${attrs}
       </article>
       <p className="embed-info__note">
         Pegá el código en Genially (Insertar → HTML) o en cualquier web que
-        acepte HTML. Si los dejás vacíos, el botón de éxito no aparece.
+        acepte HTML. Llená <code>Texto del botón</code> y{" "}
+        <code>Enlace del botón</code> para el botón de éxito; si los dejás
+        vacíos no se muestra.
       </p>
     </aside>
   );

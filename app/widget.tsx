@@ -119,31 +119,13 @@ export default function ScratchWidget() {
     };
   }, [input, runCheck]);
 
-  // Lee parámetros configurables: primero de los atributos del iframe
-  // (<iframe boton_texto="..." boton_link="...">), y como fallback de
-  // los query params (?boton_texto=...&boton_link=...).
-  // Los atributos solo funcionan en mismo origen; en cross-origin
-  // (Genially) la URL es la vía confiable.
+  // Lee parámetros configurables de la URL de inserción:
+  // ?boton_texto=...&boton_link=... muestra un botón de éxito con
+  // texto y enlace propio junto a "Ver vista previa".
   useEffect(() => {
-    let texto = "";
-    let link = "";
-
-    try {
-      const frame = window.frameElement as HTMLIFrameElement | null;
-      if (frame) {
-        texto = frame.getAttribute("boton_texto")?.trim() ?? "";
-        link = frame.getAttribute("boton_link")?.trim() ?? "";
-      }
-    } catch {
-      // cross-origin: sin acceso a frameElement
-    }
-
-    if (!texto || !link) {
-      const params = new URLSearchParams(window.location.search);
-      texto = params.get("boton_texto")?.trim() ?? "";
-      link = params.get("boton_link")?.trim() ?? "";
-    }
-
+    const params = new URLSearchParams(window.location.search);
+    const texto = params.get("boton_texto")?.trim();
+    const link = params.get("boton_link")?.trim();
     if (texto && link) setSuccessCta({ texto, link });
   }, []);
 

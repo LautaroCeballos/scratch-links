@@ -88,7 +88,7 @@ El widget es una app completa, así que se incrusta con un `<iframe>`:
 
 ### Botón de éxito configurable
 
-Podés sumar un botón junto a "Ver vista previa" que aparece cuando un proyecto se verifica como **público**, con texto y enlace propios. El código de inserción incluye ambas vías (atributos del iframe + parámetros de URL) para que funcione en cualquier plataforma:
+Podés sumar un botón junto a "Ver vista previa" que aparece cuando un proyecto se verifica como **público**, con texto y enlace propios. Se configura mediante parámetros de URL:
 
 ```html
 <iframe
@@ -99,15 +99,12 @@ Podés sumar un botón junto a "Ver vista previa" que aparece cuando un proyecto
   title="Verificador de proyectos de Scratch"
   allow="autoplay"
   allowfullscreen
-  boton_texto="Ir a mi proyecto"
-  boton_link="https://scratch.mit.edu/projects/1234567890"
 ></iframe>
 ```
 
 - `boton_texto`: texto del botón (ej. "Ir a mi proyecto").
 - `boton_link`: enlace que el botón abre en una pestaña nueva.
-- Si los dejás vacíos, el botón no aparece.
-- En plataformas como **Genially** los atributos no son accesibles (cross-origin), pero los parámetros de URL sí funcionan.
+- Si falta alguno de los dos, el botón no se muestra.
 
 > Al abrir la web directamente, el código de inserción se muestra a la derecha del verificador (o debajo en pantallas angostas). Dentro del iframe, solo se ve el verificador.
 
