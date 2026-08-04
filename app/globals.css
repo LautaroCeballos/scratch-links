@@ -237,6 +237,15 @@ body {
   gap: 8px;
   justify-content: flex-end;
   z-index: 1;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.widget__actions > * {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .widget__actions .widget__retry {
