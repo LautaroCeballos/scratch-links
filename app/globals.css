@@ -162,6 +162,7 @@ body {
   margin-top: 4px;
   padding-top: 4px;
   min-height: 32px;
+  position: relative;
 }
 
 .widget__checking {
@@ -228,11 +229,14 @@ body {
 }
 
 .widget__actions {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  justify-content: center;
-  margin-top: 6px;
+  justify-content: flex-end;
+  z-index: 1;
 }
 
 .widget__actions .widget__retry {
