@@ -27,8 +27,8 @@ export default function EmbedInfo() {
       : "";
     return `<iframe
   src="${BASE_SRC}${qs}"
-  width="520"
-  height="740"
+  width="760"
+  height="400"
   style="border: 0; overflow: hidden;"
   title="Verificador de proyectos de Scratch"
   allow="autoplay"

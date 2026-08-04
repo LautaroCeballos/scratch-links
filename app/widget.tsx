@@ -79,6 +79,60 @@ function CheckIcon() {
   );
 }
 
+function ExternalLinkIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M15 3h6v6" />
+      <path d="M10 14 21 3" />
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  );
+}
+
+/** Convierte https://www.youtube.com/watch?v=ID&t=30s en la URL embebible. */
+function toEmbedUrl(watchUrl: string): string {
+  try {
+    const url = new URL(watchUrl);
+    const v = url.searchParams.get("v");
+    const t = (url.searchParams.get("t") ?? "").replace(/\D/g, "");
+    if (!v) return watchUrl;
+    return `https://www.youtube.com/embed/${v}${t ? `?start=${t}` : ""}`;
+  } catch {
+    return watchUrl;
+  }
+}
+
+type HelpVideo = { title: string; embedUrl: string };
+
 /* ---------- Widget ---------- */
 
 export default function ScratchWidget() {
@@ -89,9 +143,22 @@ export default function ScratchWidget() {
     texto: string;
     link: string;
   } | null>(null);
+  const [helpVideo, setHelpVideo] = useState<HelpVideo | null>(null);
+  const modalCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  // Cierra la modal con Escape y devuelve el foco al abrir.
+  useEffect(() => {
+    if (!helpVideo) return;
+    modalCloseRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setHelpVideo(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [helpVideo]);
 
   const runCheck = useCallback(async (raw: string) => {
     const projectId = extractProjectId(raw);
@@ -190,84 +257,228 @@ export default function ScratchWidget() {
   return (
     <section className="widget" aria-label="Verificador de proyectos de Scratch">
       <div className={`widget__card${cardState}`}>
-        <label className="widget__label" htmlFor="scratch-input">
-          Pegá aquí el link de tu proyecto
-        </label>
-        <div className="widget__field">
-          <LinkIcon />
-          <input
-            id="scratch-input"
-            className="widget__input"
-            type="url"
-            inputMode="url"
-            autoComplete="off"
-            spellCheck={false}
-            placeholder="https://scratch.mit.edu/projects/1234567890"
-            value={input}
-            onChange={handleChange}
-            aria-invalid={invalid || undefined}
-          />
+        <div className="widget__main">
+          <label className="widget__label" htmlFor="scratch-input">
+            Pegá aquí el link de tu proyecto
+          </label>
         </div>
 
-        <div
-          className="widget__result"
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {state.status === "idle" && (
-            <img
-              className="widget__notify-img"
-              src="/pegar-enlace.png"
-              alt="Pegá el link de tu proyecto para verificar la entrega"
-              width={1536}
-              height={1024}
-              loading="lazy"
+        <div className="widget__form">
+          <div className="widget__field">
+            <LinkIcon />
+            <input
+              id="scratch-input"
+              className="widget__input"
+              type="url"
+              inputMode="url"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="https://scratch.mit.edu/projects/1234567890"
+              value={input}
+              onChange={handleChange}
+              aria-invalid={invalid || undefined}
             />
-          )}
+          </div>
 
-          {checking && (
-            <div className="widget__checking">
-              <span className="spinner" aria-hidden="true" />
-              Verificando…
+          {(state.status === "idle" || error) && (
+            <div className="widget__help">
+              <p className="widget__help-text">
+                Recordá que para entregar el desafío, primero tenés que
+                publicar tu proyecto. Si tenés dudas, revisá la ayuda a
+                continuación:
+              </p>
+              <ul className="widget__help-list">
+                {[
+                  {
+                    title: "Cómo crear mi cuenta en Scratch",
+                    url: "https://www.youtube.com/watch?v=RoK2-Ob6xmk&t=10s",
+                  },
+                  {
+                    title: "Cómo verificar mi cuenta para publicar proyectos",
+                    url: "https://www.youtube.com/watch?v=ty2V3pA59CE&t=37s",
+                  },
+                  {
+                    title:
+                      "Cómo publicar mi proyecto y obtener el enlace para entregar",
+                    url: "https://www.youtube.com/watch?v=jill5xJVoew&t=13s",
+                  },
+                ].map((item) => (
+                  <li key={item.url}>
+                    <a
+                      className="widget__help-link"
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setHelpVideo({
+                          title: item.title,
+                          embedUrl: toEmbedUrl(item.url),
+                        });
+                      }}
+                    >
+                      <ExternalLinkIcon />
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
-          {state.status === "original" && (
-            <img
-              className="widget__notify-img"
-              src={`/error-proyecto-original-${state.challenge}.png`}
-              alt={`Imagen explicativa: no entregar el proyecto original del Desafío ${state.challenge}`}
-              width={1536}
-              height={1024}
-              loading="lazy"
-            />
+          {success && (
+            <p className="widget__form-success">
+              ¡Proyecto verificado!
+              <br />
+              Puedes continuar hacia la entrega
+            </p>
           )}
 
-          {state.status === "invalid" && (
-            <img
-              className="widget__notify-img"
-              src="/link-invalido.png"
-              alt="Imagen explicativa: el link ingresado no es un link de proyecto de Scratch, pegá el link completo https://scratch.mit.edu/projects/ID"
-              width={1536}
-              height={1024}
-              loading="lazy"
-            />
+          <div className="widget__actions">
+            {success &&
+              (successCta ? (
+                <a
+                  className="widget__submit"
+                  href={successCta.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <CheckIcon />
+                  {successCta.texto}
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  className="widget__submit"
+                  disabled
+                  title="El enlace de entrega se configura en la página de inserción"
+                >
+                  <CheckIcon />
+                  Agregar entrega
+                </button>
+              ))}
+          </div>
+        </div>
+
+        <div className="widget__status">
+          {checking && (
+            <div
+              className="widget__status-inner"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <div className="widget__checking">
+                <span className="spinner" aria-hidden="true" />
+                Verificando…
+              </div>
+            </div>
           )}
 
-          {state.status === "private" && (
-            <img
-              className="widget__notify-img"
-              src="/proyecto-no-compartido.png"
-              alt="Imagen explicativa: tu proyecto está privado, activá Compartir para entregarlo"
-              width={1536}
-              height={1024}
-              loading="lazy"
-            />
+          {error && (
+            <div
+              className="widget__status-inner"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {state.status === "invalid" && (
+                <p className="widget__feedback-error">
+                  Ese link no es de un proyecto de Scratch.
+                </p>
+              )}
+
+              {state.status === "private" && (
+                <p className="widget__feedback-error">
+                  Tu proyecto todavía no está compartido.
+                </p>
+              )}
+
+              {state.status === "original" && (
+                <p className="widget__feedback-error">
+                  Ese es el proyecto original del desafío. Entregá tu propia
+                  versión.
+                </p>
+              )}
+
+              {state.status === "error" && (
+                <>
+                  <p className="widget__feedback-error">
+                    No pudimos verificar tu proyecto.
+                  </p>
+                  <button
+                    type="button"
+                    className="widget__retry"
+                    onClick={retry}
+                  >
+                    Intentar de nuevo
+                  </button>
+                </>
+              )}
+            </div>
           )}
 
-          {state.status === "error" && (
-            <>
+          {success && (
+            <div
+              className="widget__status-inner"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <p className="widget__feedback-success">
+                El proyecto está listo para entregar
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="widget__viewer">
+          <div className="widget__viewer-body">
+            {state.status === "idle" && (
+              <img
+                className="widget__notify-img"
+                src="/pegar-enlace.png"
+                alt="Pegá el link de tu proyecto para verificar la entrega"
+                width={1536}
+                height={1024}
+                loading="lazy"
+              />
+            )}
+
+            {state.status === "original" && (
+              <img
+                className="widget__notify-img"
+                src={`/error-proyecto-original-${state.challenge}.png`}
+                alt={`Imagen explicativa: no entregar el proyecto original del Desafío ${state.challenge}`}
+                width={1536}
+                height={1024}
+                loading="lazy"
+              />
+            )}
+
+            {state.status === "invalid" && (
+              <img
+                className="widget__notify-img"
+                src="/link-invalido.png"
+                alt="Imagen explicativa: el link ingresado no es un link de proyecto de Scratch, pegá el link completo https://scratch.mit.edu/projects/ID"
+                width={1536}
+                height={1024}
+                loading="lazy"
+              />
+            )}
+
+            {state.status === "private" && (
+              <img
+                className="widget__notify-img"
+                src="/proyecto-no-compartido.png"
+                alt="Imagen explicativa: tu proyecto está privado, activá Compartir para entregarlo"
+                width={1536}
+                height={1024}
+                loading="lazy"
+              />
+            )}
+
+            {state.status === "error" && (
               <img
                 className="widget__notify-img"
                 src="/no-se-pudo-verificar.png"
@@ -276,65 +487,94 @@ export default function ScratchWidget() {
                 height={1024}
                 loading="lazy"
               />
-              <button type="button" className="widget__retry" onClick={retry}>
-                Intentar de nuevo
-              </button>
-            </>
-          )}
+            )}
 
-          {state.status === "public" && (
-            <>
-              {showEmbed ? (
-                <div className="embed">
-                  <div className="embed__inner">
-                    <iframe
-                      src={EMBED_URL(state.projectId)}
-                      title="Vista previa del proyecto de Scratch"
-                      width={EMBED_WIDTH}
-                      height={EMBED_HEIGHT}
-                      allow="autoplay"
-                      allowFullScreen
-                      scrolling="no"
-                      onError={() => setShowEmbed(false)}
-                    />
+            {success && (
+              <>
+                {showEmbed ? (
+                  <div className="embed">
+                    <div className="embed__inner">
+                      <iframe
+                        src={EMBED_URL(state.projectId)}
+                        title="Vista previa del proyecto de Scratch"
+                        width={EMBED_WIDTH}
+                        height={EMBED_HEIGHT}
+                        allow="autoplay"
+                        allowFullScreen
+                        scrolling="no"
+                        onError={() => setShowEmbed(false)}
+                      />
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <img
-                  className="widget__notify-img"
-                  src="/enlace-verificado.png"
-                  alt="Imagen de éxito: tu enlace fue verificado y está listo para entregar"
-                  width={1536}
-                  height={1024}
-                  loading="lazy"
-                />
-              )}
-              <button
-                type="button"
-                className="widget__preview-toggle"
-                onClick={() => setShowEmbed((v) => !v)}
-                aria-expanded={showEmbed}
-                aria-label={showEmbed ? "Ocultar vista previa" : "Ver vista previa"}
-              >
-                <EyeIcon />
-              </button>
-              {successCta && (
-                <div className="widget__actions">
-                  <a
-                    className="widget__success-link"
-                    href={successCta.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <CheckIcon />
-                    {successCta.texto}
-                  </a>
-                </div>
-              )}
-            </>
-          )}
+                ) : (
+                  <img
+                    className="widget__notify-img"
+                    src="/enlace-verificado.png"
+                    alt="Imagen de éxito: tu enlace fue verificado y está listo para entregar"
+                    width={1536}
+                    height={1024}
+                    loading="lazy"
+                  />
+                )}
+
+                <button
+                  type="button"
+                  className="widget__preview-toggle"
+                  onClick={() => setShowEmbed((v) => !v)}
+                  aria-expanded={showEmbed}
+                  aria-label={
+                    showEmbed ? "Ocultar vista previa" : "Ver vista previa"
+                  }
+                >
+                  <EyeIcon />
+                  <span>
+                    {showEmbed ? "Ocultar vista previa" : "Ver vista previa"}
+                  </span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
+
+      {helpVideo && (
+        <div
+          className="widget__modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={helpVideo.title}
+          onClick={() => setHelpVideo(null)}
+        >
+          <div
+            className="widget__modal-content"
+            role="document"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="widget__modal-header">
+              <h3 className="widget__modal-title">{helpVideo.title}</h3>
+              <button
+                ref={modalCloseRef}
+                type="button"
+                className="widget__modal-close"
+                onClick={() => setHelpVideo(null)}
+                aria-label="Cerrar video"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+            <div className="widget__modal-video">
+              <iframe
+                src={helpVideo.embedUrl}
+                title={helpVideo.title}
+                width={640}
+                height={360}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
