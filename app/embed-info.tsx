@@ -27,9 +27,7 @@ export default function EmbedInfo() {
       : "";
     return `<iframe
   src="${BASE_SRC}${qs}"
-  width="760"
-  height="400"
-  style="border: 0; overflow: hidden;"
+  style="border: 0; width: 100%; height: 100%; display: block;"
   title="Verificador de proyectos de Scratch"
   allow="autoplay"
   allowfullscreen
@@ -90,9 +88,10 @@ export default function EmbedInfo() {
       </article>
       <p className="embed-info__note">
         Pegá el código en Genially (Insertar → HTML) o en cualquier web que
-        acepte HTML. Llená <code>Texto del botón</code> y{" "}
-        <code>Enlace del botón</code> para el botón de éxito; si los dejás
-        vacíos no se muestra.
+        acepte HTML. El widget se adapta automáticamente al tamaño del bloque:
+        redimensioná el elemento HTML hasta el tamaño deseado. Llená{" "}
+        <code>Texto del botón</code> y <code>Enlace del botón</code> para el
+        botón de éxito; si los dejás vacíos no se muestra.
       </p>
     </aside>
   );

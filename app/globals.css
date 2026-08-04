@@ -794,6 +794,75 @@ body {
   }
 }
 
+/* ---------- Modo embebido (dentro de iframe / Genially) ----------
+   El widget llena 100% del ancho y alto del contenedor que lo inserta.
+   Activado con la clase .is-embedded en <html>. */
+
+html.is-embedded,
+html.is-embedded body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.is-embedded .page {
+  min-height: 0;
+  height: 100%;
+  align-items: stretch;
+  padding: 0;
+}
+
+.is-embedded .page__cols {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: stretch;
+  align-items: stretch;
+}
+
+.is-embedded .widget {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+.is-embedded .widget__card {
+  width: 100%;
+  height: 100%;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.is-embedded .widget__viewer {
+  height: 100%;
+  min-height: 0;
+}
+
+.is-embedded .widget__viewer-body {
+  height: 100%;
+  min-height: 0;
+}
+
+/* Imágenes de estado: llenan el visor sin deformarse */
+.is-embedded .widget__viewer-body .widget__notify-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Juego embebido: llena todo el visor */
+.is-embedded .widget__viewer-body .embed,
+.is-embedded .widget__viewer-body .embed__inner {
+  width: 100%;
+  height: 100%;
+}
+
+.is-embedded .widget__viewer-body .embed iframe {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
 /* ---------- Accesibilidad ---------- */
 
 @media (prefers-reduced-motion: reduce) {

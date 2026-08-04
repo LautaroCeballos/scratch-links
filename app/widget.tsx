@@ -149,6 +149,14 @@ export default function ScratchWidget() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  // Marca el documento cuando corre dentro de un iframe (Genially):
+  // habilita el layout fluido que llena el contenedor embebido.
+  useEffect(() => {
+    if (window.self !== window.top) {
+      document.documentElement.classList.add("is-embedded");
+    }
+  }, []);
+
   // Cierra la modal con Escape y devuelve el foco al abrir.
   useEffect(() => {
     if (!helpVideo) return;
