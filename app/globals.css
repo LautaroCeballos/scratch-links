@@ -694,7 +694,7 @@ body {
   flex-direction: column;
   background: #ffffff;
   border-radius: 14px;
-  overflow: auto;
+  overflow: hidden;
   box-shadow: 0 24px 64px rgba(15, 20, 30, 0.45);
   animation: modal-pop 0.18s ease;
 }
@@ -756,9 +756,11 @@ body {
 
 .widget__modal-video {
   position: relative;
-  flex: 0 0 auto;
+  flex: none;
   width: 100%;
+  max-width: min(100%, calc((100dvh - 150px) * 16 / 9));
   aspect-ratio: 16 / 9;
+  margin-inline: auto;
   background: #000000;
 }
 
