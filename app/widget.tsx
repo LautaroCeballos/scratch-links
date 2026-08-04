@@ -550,8 +550,7 @@ export default function ScratchWidget() {
               role="document"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="widget__modal-header">
-                <h3 className="widget__modal-title">{helpVideo.title}</h3>
+              <div className="widget__modal-video">
                 <button
                   ref={modalCloseRef}
                   type="button"
@@ -561,8 +560,6 @@ export default function ScratchWidget() {
                 >
                   <CloseIcon />
                 </button>
-              </div>
-              <div className="widget__modal-video">
                 <iframe
                   src={helpVideo.embedUrl}
                   title={helpVideo.title}
