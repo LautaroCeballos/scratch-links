@@ -88,7 +88,7 @@ body {
     "form   viewer";
   column-gap: 20px;
   row-gap: 12px;
-  align-items: start;
+  align-items: stretch;
   background: var(--card);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius);
@@ -107,6 +107,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  height: 100%;
 }
 
 .widget__status {
@@ -195,18 +196,28 @@ body {
   pointer-events: none;
 }
 
-/* Ayuda de publicación (solo estado idle) */
+/* Caja de estado unificada: siempre presente, mismo tamaño y borde
+   según el estado (gris en idle, rojo en error, verde en éxito).
+   Solo cambia el contenido interno para evitar saltos de layout. */
 
-.widget__help {
+.widget__statebox {
+  flex: 1;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding: 12px 14px;
   background: #ffffff;
   border: 2px solid var(--border-strong);
   border-radius: 10px;
 }
 
-/* Borde de la ayuda según el estado del widget */
-.widget__card--error .widget__help {
+.widget__card--error .widget__statebox {
   border-color: var(--danger-ink);
+}
+
+.widget__card--success .widget__statebox {
+  border-color: var(--success);
 }
 
 .widget__help-text {
@@ -278,7 +289,7 @@ body {
 }
 
 .widget__form-success {
-  margin: 8px 24px 0;
+  margin: auto;
   text-align: center;
   font-size: 16px;
   line-height: 1.4;
@@ -315,19 +326,6 @@ body {
   to {
     transform: rotate(360deg);
   }
-}
-
-/* Columna 2 · fila 1: mensaje de estado */
-
-.widget__status-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.widget__status-inner .widget__feedback-error {
-  color: var(--danger-ink);
 }
 
 /* Columna 2 · fila 2: visor de imágenes y juego */
@@ -401,7 +399,7 @@ body {
 
 .widget__actions {
   display: flex;
-  margin-top: 2px;
+  margin-top: auto;
 }
 
 .widget__actions:empty {
@@ -660,7 +658,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   background: rgba(15, 20, 30, 0.72);
   backdrop-filter: blur(4px);
   animation: modal-fade 0.15s ease;
@@ -677,6 +675,9 @@ body {
 
 .widget__modal-content {
   width: min(100%, 720px);
+  max-height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
   border-radius: 14px;
   overflow: hidden;
@@ -699,6 +700,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
   gap: 12px;
   padding: 12px 14px 12px 18px;
   border-bottom: 1px solid var(--border);
@@ -740,7 +742,12 @@ body {
 
 .widget__modal-video {
   position: relative;
+  flex-shrink: 1;
+  min-height: 0;
   aspect-ratio: 16 / 9;
+  max-width: 100%;
+  max-height: calc(100dvh - 120px);
+  margin-inline: auto;
   background: #000000;
 }
 
@@ -888,6 +895,14 @@ html.is-embedded body {
     font-size: 18px;
   }
 
+  .widget__modal-content {
+    width: min(100%, 860px);
+  }
+
+  .widget__modal-title {
+    font-size: 18px;
+  }
+
   .widget__input {
     font-size: 18px;
     padding-top: 11px;
@@ -936,6 +951,14 @@ html.is-embedded body {
     font-size: 21px;
   }
 
+  .widget__modal-content {
+    width: min(100%, 1000px);
+  }
+
+  .widget__modal-title {
+    font-size: 21px;
+  }
+
   .widget__input {
     font-size: 21px;
     padding-top: 13px;
@@ -981,6 +1004,14 @@ html.is-embedded body {
 
 @container (min-width: 1400px) {
   .widget__label {
+    font-size: 25px;
+  }
+
+  .widget__modal-content {
+    width: min(100%, 1200px);
+  }
+
+  .widget__modal-title {
     font-size: 25px;
   }
 

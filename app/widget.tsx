@@ -262,6 +262,55 @@ export default function ScratchWidget() {
       ? " widget__card--error"
       : "";
 
+  const helpContent = (
+    <>
+      <p className="widget__help-text">
+        Recordá que para entregar el desafío, primero tenés que publicar tu
+        proyecto. Si tenés dudas, revisá la ayuda a continuación:
+      </p>
+      <ul className="widget__help-list">
+        {[
+          {
+            title: "Cómo crear mi cuenta en Scratch",
+            url: "https://www.youtube.com/watch?v=RoK2-Ob6xmk&t=10s",
+          },
+          {
+            title: "Cómo verificar mi cuenta para publicar proyectos",
+            url: "https://www.youtube.com/watch?v=ty2V3pA59CE&t=37s",
+          },
+          {
+            title: "Cómo reinventar el proyecto para comenzar a trabajar",
+            url: "https://www.youtube.com/watch?v=Qyy6YJtx1Rw",
+          },
+          {
+            title:
+              "Cómo publicar mi proyecto y obtener el enlace para entregar",
+            url: "https://www.youtube.com/watch?v=jill5xJVoew&t=13s",
+          },
+        ].map((item) => (
+          <li key={item.url}>
+            <a
+              className="widget__help-link"
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.preventDefault();
+                setHelpVideo({
+                  title: item.title,
+                  embedUrl: toEmbedUrl(item.url),
+                });
+              }}
+            >
+              <ExternalLinkIcon />
+              {item.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+
   return (
     <section className="widget" aria-label="Verificador de proyectos de Scratch">
       <div className={`widget__card${cardState}`}>
@@ -288,59 +337,69 @@ export default function ScratchWidget() {
             />
           </div>
 
-          {(state.status === "idle" || error) && (
-            <div className="widget__help">
-              <p className="widget__help-text">
-                Recordá que para entregar el desafío, primero tenés que
-                publicar tu proyecto. Si tenés dudas, revisá la ayuda a
-                continuación:
-              </p>
-              <ul className="widget__help-list">
-                {[
-                  {
-                    title: "Cómo crear mi cuenta en Scratch",
-                    url: "https://www.youtube.com/watch?v=RoK2-Ob6xmk&t=10s",
-                  },
-                  {
-                    title: "Cómo verificar mi cuenta para publicar proyectos",
-                    url: "https://www.youtube.com/watch?v=ty2V3pA59CE&t=37s",
-                  },
-                  {
-                    title:
-                      "Cómo publicar mi proyecto y obtener el enlace para entregar",
-                    url: "https://www.youtube.com/watch?v=jill5xJVoew&t=13s",
-                  },
-                ].map((item) => (
-                  <li key={item.url}>
-                    <a
-                      className="widget__help-link"
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setHelpVideo({
-                          title: item.title,
-                          embedUrl: toEmbedUrl(item.url),
-                        });
-                      }}
-                    >
-                      <ExternalLinkIcon />
-                      {item.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <div
+            className="widget__statebox"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {state.status === "idle" && helpContent}
 
-          {success && (
-            <p className="widget__form-success">
-              ¡Proyecto verificado!
-              <br />
-              Puedes continuar hacia la entrega
-            </p>
-          )}
+            {checking && (
+              <div className="widget__checking">
+                <span className="spinner" aria-hidden="true" />
+                Verificando…
+              </div>
+            )}
+
+            {error && (
+              <>
+                {state.status === "invalid" && (
+                  <p className="widget__feedback-error">
+                    Ese link no es de un proyecto de Scratch.
+                  </p>
+                )}
+
+                {state.status === "private" && (
+                  <p className="widget__feedback-error">
+                    Tu proyecto todavía no está compartido.
+                  </p>
+                )}
+
+                {state.status === "original" && (
+                  <p className="widget__feedback-error">
+                    Ese es el proyecto original del desafío. Entregá tu propia
+                    versión.
+                  </p>
+                )}
+
+                {state.status === "error" && (
+                  <>
+                    <p className="widget__feedback-error">
+                      No pudimos verificar tu proyecto.
+                    </p>
+                    <button
+                      type="button"
+                      className="widget__retry"
+                      onClick={retry}
+                    >
+                      Intentar de nuevo
+                    </button>
+                  </>
+                )}
+
+                {helpContent}
+              </>
+            )}
+
+            {success && (
+              <p className="widget__form-success">
+                ¡Proyecto verificado!
+                <br />
+                Puedes continuar hacia la entrega
+              </p>
+            )}
+          </div>
 
           <div className="widget__actions">
             {success &&
@@ -368,77 +427,7 @@ export default function ScratchWidget() {
           </div>
         </div>
 
-        <div className="widget__status">
-          {checking && (
-            <div
-              className="widget__status-inner"
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <div className="widget__checking">
-                <span className="spinner" aria-hidden="true" />
-                Verificando…
-              </div>
-            </div>
-          )}
-
-          {error && (
-            <div
-              className="widget__status-inner"
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {state.status === "invalid" && (
-                <p className="widget__feedback-error">
-                  Ese link no es de un proyecto de Scratch.
-                </p>
-              )}
-
-              {state.status === "private" && (
-                <p className="widget__feedback-error">
-                  Tu proyecto todavía no está compartido.
-                </p>
-              )}
-
-              {state.status === "original" && (
-                <p className="widget__feedback-error">
-                  Ese es el proyecto original del desafío. Entregá tu propia
-                  versión.
-                </p>
-              )}
-
-              {state.status === "error" && (
-                <>
-                  <p className="widget__feedback-error">
-                    No pudimos verificar tu proyecto.
-                  </p>
-                  <button
-                    type="button"
-                    className="widget__retry"
-                    onClick={retry}
-                  >
-                    Intentar de nuevo
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-
-          {success && (
-            <div
-              className="widget__status-inner"
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <p className="widget__feedback-success">
-                El proyecto está listo para entregar
-              </p>
-            </div>
-          )}
-        </div>
+        <div className="widget__status" aria-hidden="true" />
 
         <div className="widget__viewer">
           <div className="widget__viewer-body">
