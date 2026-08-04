@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   EMBED_WIDTH,
   EMBED_HEIGHT,
@@ -125,7 +126,7 @@ function toEmbedUrl(watchUrl: string): string {
     const v = url.searchParams.get("v");
     const t = (url.searchParams.get("t") ?? "").replace(/\D/g, "");
     if (!v) return watchUrl;
-    return `https://www.youtube.com/embed/${v}${t ? `?start=${t}` : ""}`;
+    return `https://www.youtube-nocookie.com/embed/${v}${t ? `?start=${t}` : ""}`;
   } catch {
     return watchUrl;
   }
@@ -262,52 +263,56 @@ export default function ScratchWidget() {
       ? " widget__card--error"
       : "";
 
+  const helpLinks = (
+    <ul className="widget__help-list">
+      {[
+        {
+          title: "Cómo crear mi cuenta en Scratch",
+          url: "https://www.youtube.com/watch?v=RoK2-Ob6xmk&t=10s",
+        },
+        {
+          title: "Cómo verificar mi cuenta para publicar proyectos",
+          url: "https://www.youtube.com/watch?v=ty2V3pA59CE&t=37s",
+        },
+        {
+          title: "Cómo reinventar el proyecto para comenzar a trabajar",
+          url: "https://www.youtube.com/watch?v=Qyy6YJtx1Rw",
+        },
+        {
+          title:
+            "Cómo publicar mi proyecto y obtener el enlace para entregar",
+          url: "https://www.youtube.com/watch?v=jill5xJVoew&t=13s",
+        },
+      ].map((item) => (
+        <li key={item.url}>
+          <a
+            className="widget__help-link"
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              e.preventDefault();
+              setHelpVideo({
+                title: item.title,
+                embedUrl: toEmbedUrl(item.url),
+              });
+            }}
+          >
+            <ExternalLinkIcon />
+            {item.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+
   const helpContent = (
     <>
       <p className="widget__help-text">
         Recordá que para entregar el desafío, primero tenés que publicar tu
         proyecto. Si tenés dudas, revisá la ayuda a continuación:
       </p>
-      <ul className="widget__help-list">
-        {[
-          {
-            title: "Cómo crear mi cuenta en Scratch",
-            url: "https://www.youtube.com/watch?v=RoK2-Ob6xmk&t=10s",
-          },
-          {
-            title: "Cómo verificar mi cuenta para publicar proyectos",
-            url: "https://www.youtube.com/watch?v=ty2V3pA59CE&t=37s",
-          },
-          {
-            title: "Cómo reinventar el proyecto para comenzar a trabajar",
-            url: "https://www.youtube.com/watch?v=Qyy6YJtx1Rw",
-          },
-          {
-            title:
-              "Cómo publicar mi proyecto y obtener el enlace para entregar",
-            url: "https://www.youtube.com/watch?v=jill5xJVoew&t=13s",
-          },
-        ].map((item) => (
-          <li key={item.url}>
-            <a
-              className="widget__help-link"
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                e.preventDefault();
-                setHelpVideo({
-                  title: item.title,
-                  embedUrl: toEmbedUrl(item.url),
-                });
-              }}
-            >
-              <ExternalLinkIcon />
-              {item.title}
-            </a>
-          </li>
-        ))}
-      </ul>
+      {helpLinks}
     </>
   );
 
@@ -388,7 +393,7 @@ export default function ScratchWidget() {
                   </>
                 )}
 
-                {helpContent}
+                {helpLinks}
               </>
             )}
 
@@ -524,9 +529,6 @@ export default function ScratchWidget() {
                   }
                 >
                   <EyeIcon />
-                  <span>
-                    {showEmbed ? "Ocultar vista previa" : "Ver vista previa"}
-                  </span>
                 </button>
               </>
             )}
@@ -534,44 +536,47 @@ export default function ScratchWidget() {
         </div>
       </div>
 
-      {helpVideo && (
-        <div
-          className="widget__modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label={helpVideo.title}
-          onClick={() => setHelpVideo(null)}
-        >
+      {helpVideo &&
+        createPortal(
           <div
-            className="widget__modal-content"
-            role="document"
-            onClick={(e) => e.stopPropagation()}
+            className="widget__modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={helpVideo.title}
+            onClick={() => setHelpVideo(null)}
           >
-            <div className="widget__modal-header">
-              <h3 className="widget__modal-title">{helpVideo.title}</h3>
-              <button
-                ref={modalCloseRef}
-                type="button"
-                className="widget__modal-close"
-                onClick={() => setHelpVideo(null)}
-                aria-label="Cerrar video"
-              >
-                <CloseIcon />
-              </button>
+            <div
+              className="widget__modal-content"
+              role="document"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="widget__modal-header">
+                <h3 className="widget__modal-title">{helpVideo.title}</h3>
+                <button
+                  ref={modalCloseRef}
+                  type="button"
+                  className="widget__modal-close"
+                  onClick={() => setHelpVideo(null)}
+                  aria-label="Cerrar video"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+              <div className="widget__modal-video">
+                <iframe
+                  src={helpVideo.embedUrl}
+                  title={helpVideo.title}
+                  width={640}
+                  height={360}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
             </div>
-            <div className="widget__modal-video">
-              <iframe
-                src={helpVideo.embedUrl}
-                title={helpVideo.title}
-                width={640}
-                height={360}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </section>
   );
 }

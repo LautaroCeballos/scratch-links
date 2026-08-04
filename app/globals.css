@@ -27,10 +27,10 @@
   --danger-bg: #ffe9ee;
   --danger-ink: #c2254a;
 
-  /* Apto para entrega (verde Scratch) */
-  --success: #4cbf56;
-  --success-bg: #e6f7e9;
-  --success-ink: #1f7a2b;
+  /* Apto para entrega (azul verificado) */
+  --success: #2f80ed;
+  --success-bg: #e7f1fe;
+  --success-ink: #1f5fb8;
 
   --radius: 16px;
 }
@@ -181,6 +181,15 @@ body {
 }
 
 /* Borde del input según el estado del widget */
+.widget__card--error .widget__input {
+  border-color: var(--danger-ink);
+  background: #fffdfd;
+}
+
+.widget__card--error .widget__input:focus {
+  box-shadow: 0 0 0 4px var(--danger-bg);
+}
+
 .widget__card--success .widget__input {
   border-color: var(--success);
 }
@@ -294,7 +303,7 @@ body {
   font-size: 16px;
   line-height: 1.4;
   font-weight: 800;
-  color: var(--ink-strong);
+  color: var(--success-ink);
 }
 
 .widget__feedback-error {
@@ -330,12 +339,20 @@ body {
 
 /* Columna 2 · fila 2: visor de imágenes y juego */
 
+.widget__viewer {
+  height: 100%;
+}
+
 .widget__viewer-body {
   position: relative;
+  height: 100%;
   min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 2px solid var(--border-strong);
   border-radius: 12px;
-  background: #f6f8fb;
+  background: #ffffff;
   overflow: hidden;
 }
 
@@ -351,7 +368,8 @@ body {
 .widget__viewer-body .widget__notify-img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
   margin: 0;
   border: 0;
   border-radius: 0;
@@ -428,7 +446,7 @@ body {
 }
 
 .widget__submit:hover {
-  background: #185f22;
+  background: #1a4f96;
 }
 
 .widget__submit:focus-visible {
@@ -447,27 +465,23 @@ body {
   transform: none;
 }
 
-/* Botón de vista previa (flotante, centrado abajo del panel) */
+/* Botón de vista previa (flotante, abajo a la derecha del panel) */
 
 .widget__preview-toggle {
   position: absolute;
   bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 12px;
   z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  white-space: nowrap;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 800;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   color: #ffffff;
   background: rgba(35, 43, 56, 0.82);
   border: 0;
-  border-radius: 999px;
-  padding: 9px 18px;
+  border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(35, 43, 56, 0.3);
   transition: background 0.15s ease, transform 0.1s ease;
@@ -478,7 +492,7 @@ body {
 }
 
 .widget__preview-toggle:hover:not(:disabled) {
-  transform: translateX(-50%) translateY(-1px);
+  transform: translateY(-1px);
 }
 
 .widget__preview-toggle:focus-visible {
@@ -487,7 +501,7 @@ body {
 }
 
 .widget__preview-toggle:active:not(:disabled) {
-  transform: translateX(-50%) translateY(1px);
+  transform: translateY(1px);
 }
 
 /* ---------- Embed ---------- */
@@ -680,7 +694,7 @@ body {
   flex-direction: column;
   background: #ffffff;
   border-radius: 14px;
-  overflow: hidden;
+  overflow: auto;
   box-shadow: 0 24px 64px rgba(15, 20, 30, 0.45);
   animation: modal-pop 0.18s ease;
 }
@@ -742,12 +756,9 @@ body {
 
 .widget__modal-video {
   position: relative;
-  flex-shrink: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  width: 100%;
   aspect-ratio: 16 / 9;
-  max-width: 100%;
-  max-height: calc(100dvh - 120px);
-  margin-inline: auto;
   background: #000000;
 }
 
@@ -936,8 +947,8 @@ html.is-embedded body {
   }
 
   .widget__preview-toggle {
-    font-size: 16px;
-    padding: 10px 20px;
+    width: 46px;
+    height: 46px;
   }
 
   .widget__retry {
@@ -992,8 +1003,8 @@ html.is-embedded body {
   }
 
   .widget__preview-toggle {
-    font-size: 19px;
-    padding: 12px 24px;
+    width: 52px;
+    height: 52px;
   }
 
   .widget__retry {
@@ -1048,8 +1059,8 @@ html.is-embedded body {
   }
 
   .widget__preview-toggle {
-    font-size: 23px;
-    padding: 14px 28px;
+    width: 60px;
+    height: 60px;
   }
 
   .widget__retry {
