@@ -86,6 +86,39 @@ El widget es una app completa, así que se incrusta con un `<iframe>`:
 
 **Dimensiones**: el widget mide 520 × ~709 px con el juego cargado; `520 × 740` cubre todo sin scroll interno. En 375 px el widget se adapta sin romperse (el ancho mínimo recomendado es 340 px).
 
+### Botón de éxito configurable
+
+Podés sumar un botón junto a "Ver vista previa" que aparece cuando un proyecto se verifica como **público**, con texto y enlace propios. Hay dos formas de configurarlo:
+
+**Atributos del iframe** (mismo origen, ej. tu propia web):
+
+```html
+<iframe
+  src="https://scratch-links.vercel.app/"
+  width="520"
+  height="740"
+  style="border: 0; overflow: hidden;"
+  title="Verificador de proyectos de Scratch"
+  allow="autoplay"
+  allowfullscreen
+  boton_texto="Ir a mi proyecto"
+  boton_link="https://scratch.mit.edu/projects/1234567890"
+></iframe>
+```
+
+**Parámetros de URL** (cross-origin, ej. Genially):
+
+```html
+<iframe
+  src="https://scratch-links.vercel.app/?boton_texto=Ir%20a%20mi%20proyecto&boton_link=https%3A%2F%2Fscratch.mit.edu%2Fprojects%2F1234567890"
+  ...
+></iframe>
+```
+
+- `boton_texto`: texto del botón (ej. "Ir a mi proyecto").
+- `boton_link`: enlace que el botón abre en una pestaña nueva.
+- Si falta alguno de los dos, el botón no se muestra.
+
 > Al abrir la web directamente, el código de inserción se muestra a la derecha del verificador (o debajo en pantallas angostas). Dentro del iframe, solo se ve el verificador.
 
 ### En Genially

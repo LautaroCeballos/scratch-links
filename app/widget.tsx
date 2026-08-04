@@ -48,6 +48,10 @@ export default function ScratchWidget() {
   const [input, setInput] = useState("");
   const [state, setState] = useState<CheckState>({ status: "idle" });
   const [showEmbed, setShowEmbed] = useState(false);
+  const [successCta, setSuccessCta] = useState<{
+    texto: string;
+    link: string;
+  } | null>(null);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -114,6 +118,34 @@ export default function ScratchWidget() {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, [input, runCheck]);
+
+  // Lee parámetros configurables: primero de los atributos del iframe
+  // (<iframe boton_texto="..." boton_link="...">), y como fallback de
+  // los query params (?boton_texto=...&boton_link=...).
+  // Los atributos solo funcionan en mismo origen; en cross-origin
+  // (Genially) la URL es la vía confiable.
+  useEffect(() => {
+    let texto = "";
+    let link = "";
+
+    try {
+      const frame = window.frameElement as HTMLIFrameElement | null;
+      if (frame) {
+        texto = frame.getAttribute("boton_texto")?.trim() ?? "";
+        link = frame.getAttribute("boton_link")?.trim() ?? "";
+      }
+    } catch {
+      // cross-origin: sin acceso a frameElement
+    }
+
+    if (!texto || !link) {
+      const params = new URLSearchParams(window.location.search);
+      texto = params.get("boton_texto")?.trim() ?? "";
+      link = params.get("boton_link")?.trim() ?? "";
+    }
+
+    if (texto && link) setSuccessCta({ texto, link });
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -258,14 +290,26 @@ export default function ScratchWidget() {
                   loading="lazy"
                 />
               )}
-              <button
-                type="button"
-                className="widget__retry"
-                onClick={() => setShowEmbed((v) => !v)}
-                aria-expanded={showEmbed}
-              >
-                {showEmbed ? "Ocultar vista previa" : "Ver vista previa"}
-              </button>
+              <div className="widget__actions">
+                <button
+                  type="button"
+                  className="widget__retry"
+                  onClick={() => setShowEmbed((v) => !v)}
+                  aria-expanded={showEmbed}
+                >
+                  {showEmbed ? "Ocultar vista previa" : "Ver vista previa"}
+                </button>
+                {successCta && (
+                  <a
+                    className="widget__success-link"
+                    href={successCta.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {successCta.texto}
+                  </a>
+                )}
+              </div>
             </>
           )}
         </div>
