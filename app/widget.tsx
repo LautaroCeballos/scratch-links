@@ -42,6 +42,43 @@ function LinkIcon() {
   );
 }
 
+function EyeIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
 /* ---------- Widget ---------- */
 
 export default function ScratchWidget() {
@@ -272,26 +309,28 @@ export default function ScratchWidget() {
                   loading="lazy"
                 />
               )}
-              <div className="widget__actions">
-                <button
-                  type="button"
-                  className="widget__retry"
-                  onClick={() => setShowEmbed((v) => !v)}
-                  aria-expanded={showEmbed}
-                >
-                  {showEmbed ? "Ocultar vista previa" : "Ver vista previa"}
-                </button>
-                {successCta && (
+              <button
+                type="button"
+                className="widget__preview-toggle"
+                onClick={() => setShowEmbed((v) => !v)}
+                aria-expanded={showEmbed}
+                aria-label={showEmbed ? "Ocultar vista previa" : "Ver vista previa"}
+              >
+                <EyeIcon />
+              </button>
+              {successCta && (
+                <div className="widget__actions">
                   <a
                     className="widget__success-link"
                     href={successCta.link}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
+                    <CheckIcon />
                     {successCta.texto}
                   </a>
-                )}
-              </div>
+                </div>
+              )}
             </>
           )}
         </div>
