@@ -25,16 +25,21 @@ export default function EmbedInfo() {
 
   const embedCode = useMemo(() => {
     const attrs = botonTexto && botonLink
-      ? `\n  boton_texto="${botonTexto}"\n  boton_link="${botonLink}"`
+      ? `  boton_texto="${botonTexto}"
+  boton_link="${botonLink}"`
+      : "";
+    const qs = botonTexto && botonLink
+      ? `?boton_texto=${encodeURIComponent(botonTexto)}&boton_link=${encodeURIComponent(botonLink)}`
       : "";
     return `<iframe
-  src="${BASE_SRC}"
+  src="${BASE_SRC}${qs}"
   width="520"
   height="740"
   style="border: 0; overflow: hidden;"
   title="Verificador de proyectos de Scratch"
   allow="autoplay"
-  allowfullscreen${attrs}
+  allowfullscreen
+${attrs}
 ></iframe>`;
   }, [botonTexto, botonLink]);
 
