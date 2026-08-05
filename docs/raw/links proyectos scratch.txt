@@ -1,0 +1,24 @@
+Desafio 1: https://scratch.mit.edu/projects/1081188585
+
+Desafio 2: https://scratch.mit.edu/projects/1081199620
+
+Desafio 3: https://scratch.mit.edu/projects/1081201741
+
+Desafio 4: https://scratch.mit.edu/projects/1081217132
+
+Entrega 1: https://academia.creativos-digitales.com/mod/assign/view.php?id=551433&action=editsubmission
+
+Entrega 2: https://academia.creativos-digitales.com/mod/assign/view.php?id=551441&action=editsubmission
+
+Entrega 3: https://academia.creativos-digitales.com/mod/assign/view.php?id=551449&action=editsubmission
+
+Entrega 4: https://academia.creativos-digitales.com/mod/assign/view.php?id=551457&action=editsubmission
+
+
+<iframe
+  src="https://scratch-links.vercel.app/?boton_texto=Hacer%20Entrega%201&boton_link=https%3A%2F%2Facademia.creativos-digitales.com%2Fmod%2Fassign%2Fview.php%3Fid%3D551433%26action%3Deditsubmission"
+  style="border: 0; width: 100%; height: 100%; display: block;"
+  title="Verificador de proyectos de Scratch"
+  allow="autoplay"
+  allowfullscreen
+></iframe>
