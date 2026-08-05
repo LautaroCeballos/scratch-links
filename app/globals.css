@@ -27,10 +27,10 @@
   --danger-bg: #ffe9ee;
   --danger-ink: #c2254a;
 
-  /* Apto para entrega (azul verificado) */
-  --success: #2f80ed;
-  --success-bg: #e7f1fe;
-  --success-ink: #1f5fb8;
+  /* Apto para entrega (verde verificado) */
+  --success: #2f9e44;
+  --success-bg: #e6f6ea;
+  --success-ink: #1e7d3c;
 
   --radius: 16px;
 }
@@ -446,7 +446,7 @@ body {
 }
 
 .widget__submit:hover {
-  background: #1a4f96;
+  background: #176b32;
 }
 
 .widget__submit:focus-visible {
@@ -1066,7 +1066,7 @@ html.is-embedded body {
   background: var(--card);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius);
-  padding: 20px 22px;
+  padding: 6px 22px 20px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -1083,6 +1083,7 @@ html.is-embedded body {
 .fv-head {
   grid-area: head;
   min-width: 0;
+  margin-bottom: -10px;
 }
 
 .fv-label {
@@ -1116,6 +1117,47 @@ html.is-embedded body {
   font-weight: 700;
   transition: border-color 0.15s ease, background 0.15s ease,
     box-shadow 0.15s ease;
+}
+
+.fv-upload--has-file {
+  padding-right: 44px;
+}
+
+.fv-upload__clear {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--muted);
+  box-shadow: 0 1px 4px rgba(35, 43, 56, 0.14);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fv-upload__clear svg {
+  width: 14px;
+  height: 14px;
+}
+
+.fv-upload__clear:hover {
+  color: var(--danger-ink);
+  background: var(--danger-bg);
+  box-shadow: 0 2px 8px rgba(194, 37, 74, 0.18);
+}
+
+.fv-upload__clear:focus-visible {
+  outline: 3px solid var(--accent-soft);
+  outline-offset: 2px;
 }
 
 .fv-upload > svg {
@@ -1265,7 +1307,7 @@ html.is-embedded body {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   margin: 0;
   border: 0;
   border-radius: 0;
@@ -1379,7 +1421,7 @@ html.is-embedded body {
 }
 
 .fv-submit:hover {
-  background: #1a4f96;
+  background: #176b32;
 }
 
 .fv-submit:focus-visible {

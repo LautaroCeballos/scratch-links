@@ -136,16 +136,23 @@ type HelpVideo = { title: string; embedUrl: string };
 
 /* ---------- Widget ---------- */
 
-export default function ScratchWidget() {
+type SuccessCta = { texto: string; link: string };
+
+type ScratchWidgetProps = {
+  successCta?: SuccessCta | null;
+};
+
+export default function ScratchWidget({
+  successCta: successCtaProp = null,
+}: ScratchWidgetProps) {
   const [input, setInput] = useState("");
   const [state, setState] = useState<CheckState>({ status: "idle" });
   const [showEmbed, setShowEmbed] = useState(false);
-  const [successCta, setSuccessCta] = useState<{
-    texto: string;
-    link: string;
-  } | null>(null);
+  const [urlSuccessCta, setUrlSuccessCta] = useState<SuccessCta | null>(null);
   const [helpVideo, setHelpVideo] = useState<HelpVideo | null>(null);
   const modalCloseRef = useRef<HTMLButtonElement | null>(null);
+
+  const successCta = successCtaProp ?? urlSuccessCta;
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -239,7 +246,7 @@ export default function ScratchWidget() {
     const params = new URLSearchParams(window.location.search);
     const texto = params.get("boton_texto")?.trim();
     const link = params.get("boton_link")?.trim();
-    if (texto && link) setSuccessCta({ texto, link });
+    if (texto && link) setUrlSuccessCta({ texto, link });
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

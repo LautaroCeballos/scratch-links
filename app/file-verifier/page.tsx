@@ -21,6 +21,11 @@ export default function FileVerifierPage() {
     setEmbedded(window.self !== window.top);
   }, []);
 
+  const successCta =
+    botonTexto.trim() && botonLink.trim()
+      ? { texto: botonTexto.trim(), link: botonLink.trim() }
+      : null;
+
   const embedCode = useMemo(() => {
     const qs =
       botonTexto && botonLink
@@ -46,7 +51,7 @@ export default function FileVerifierPage() {
   return (
     <main className="fv-page">
       <div className="fv-page__cols">
-        <FileVerifierWidget />
+        <FileVerifierWidget successCta={successCta} />
         {!embedded && (
           <aside className="fv-embed-info" aria-labelledby="fv-embed-info-title">
             <h2 id="fv-embed-info-title">Insertá esta herramienta en tu web</h2>

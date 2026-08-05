@@ -96,7 +96,7 @@ function CloseIcon() {
 }
 
 /** Lee el CTA configurable desde la URL de inserción (?boton_texto=&boton_link=). */
-function readSuccessCta() {
+function readSuccessCtaFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const texto = params.get("boton_texto")?.trim();
   const link = params.get("boton_link")?.trim();
@@ -118,17 +118,24 @@ function toEmbedUrl(watchUrl: string): string {
 
 type HelpVideo = { title: string; embedUrl: string };
 
-export default function FileVerifierWidget() {
+type SuccessCta = { texto: string; link: string };
+
+type FileVerifierWidgetProps = {
+  successCta?: SuccessCta | null;
+};
+
+export default function FileVerifierWidget({
+  successCta: successCtaProp = null,
+}: FileVerifierWidgetProps) {
   const [state, setState] = useState<FileState>({ status: "idle" });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
-  const [successCta, setSuccessCta] = useState<{
-    texto: string;
-    link: string;
-  } | null>(null);
+  const [urlSuccessCta, setUrlSuccessCta] = useState<SuccessCta | null>(null);
   const [helpVideo, setHelpVideo] = useState<HelpVideo | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const modalCloseRef = useRef<HTMLButtonElement | null>(null);
+
+  const successCta = successCtaProp ?? urlSuccessCta;
 
   // Marca el documento cuando corre dentro de un iframe (Genially).
   useEffect(() => {
@@ -149,7 +156,7 @@ export default function FileVerifierWidget() {
   }, [helpVideo]);
 
   useEffect(() => {
-    setSuccessCta(readSuccessCta());
+    setUrlSuccessCta(readSuccessCtaFromUrl());
   }, []);
 
   const runCheck = async (file: File) => {
@@ -192,6 +199,12 @@ export default function FileVerifierWidget() {
     // Permite volver a elegir el mismo archivo (resetea el value del input).
     if (inputRef.current) inputRef.current.value = "";
     void runCheck(file);
+  };
+
+  const clearFile = () => {
+    setSelectedFile(null);
+    setState({ status: "idle" });
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   const formatSize = (bytes: number) => {
@@ -258,13 +271,13 @@ export default function FileVerifierWidget() {
     >
       <div className={`fv-card${cardState}`}>
         <div className="fv-head">
-          <label className="fv-label" htmlFor="fv-file-input">
+          <p className="fv-label" id="fv-file-label">
             Subí tu proyecto de Scratch para verificarlo
-          </label>
+          </p>
         </div>
 
         <div
-          className={`fv-upload${dragOver ? " fv-upload--dragover" : ""}`}
+          className={`fv-upload${dragOver ? " fv-upload--dragover" : ""}${hasFile ? " fv-upload--has-file" : ""}`}
           role="button"
           tabIndex={0}
           onClick={() => inputRef.current?.click()}
@@ -305,12 +318,26 @@ export default function FileVerifierWidget() {
               </span>
             </>
           )}
+          {hasFile && (
+            <button
+              type="button"
+              className="fv-upload__clear"
+              onClick={(e) => {
+                e.stopPropagation();
+                clearFile();
+              }}
+              aria-label="Quitar archivo"
+            >
+              <CloseIcon />
+            </button>
+          )}
           <input
             ref={inputRef}
             id="fv-file-input"
             className="fv-upload__input"
             type="file"
             accept=".sb3,application/zip"
+            aria-labelledby="fv-file-label"
             onChange={(e) => onFile(e.target.files?.[0])}
           />
         </div>

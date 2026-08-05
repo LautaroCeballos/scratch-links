@@ -9,22 +9,33 @@ import { useEffect, useMemo, useState } from "react";
  */
 const BASE_SRC = "https://scratch-links.vercel.app/";
 
-export default function EmbedInfo() {
+type EmbedInfoProps = {
+  botonTexto: string;
+  botonLink: string;
+  onBotonTextoChange: (value: string) => void;
+  onBotonLinkChange: (value: string) => void;
+};
+
+export default function EmbedInfo({
+  botonTexto,
+  botonLink,
+  onBotonTextoChange,
+  onBotonLinkChange,
+}: EmbedInfoProps) {
   // Inicializamos como "embebida" para que la sección nunca haga flash
   // dentro de un iframe anfitrión; el effect la revela en vista directa.
   const [embedded, setEmbedded] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [botonTexto, setBotonTexto] = useState("");
-  const [botonLink, setBotonLink] = useState("");
 
   useEffect(() => {
     setEmbedded(window.self !== window.top);
   }, []);
 
   const embedCode = useMemo(() => {
-    const qs = botonTexto && botonLink
-      ? `?boton_texto=${encodeURIComponent(botonTexto)}&boton_link=${encodeURIComponent(botonLink)}`
-      : "";
+    const qs =
+      botonTexto && botonLink
+        ? `?boton_texto=${encodeURIComponent(botonTexto)}&boton_link=${encodeURIComponent(botonLink)}`
+        : "";
     return `<iframe
   src="${BASE_SRC}${qs}"
   style="border: 0; width: 100%; height: 100%; display: block;"
@@ -59,7 +70,7 @@ export default function EmbedInfo() {
               type="text"
               className="embed-info__input"
               value={botonTexto}
-              onChange={(e) => setBotonTexto(e.target.value)}
+              onChange={(e) => onBotonTextoChange(e.target.value)}
               placeholder="Ej: Ir a mi proyecto"
             />
           </label>
@@ -69,7 +80,7 @@ export default function EmbedInfo() {
               type="url"
               className="embed-info__input"
               value={botonLink}
-              onChange={(e) => setBotonLink(e.target.value)}
+              onChange={(e) => onBotonLinkChange(e.target.value)}
               placeholder="Ej: https://scratch.mit.edu/projects/1234567890"
             />
           </label>
