@@ -1078,6 +1078,12 @@ html.is-embedded body {
 .fv-card--success {
   border-color: var(--success);
   box-shadow: 0 0 0 4px var(--success-bg);
+  /* En éxito la imagen se extiende hasta el final del botón */
+  grid-template-areas:
+    "head    head"
+    "upload  viewer"
+    "state   viewer"
+    "submit  viewer";
 }
 
 .fv-head {
