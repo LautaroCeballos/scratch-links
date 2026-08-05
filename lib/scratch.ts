@@ -38,13 +38,14 @@ export const VALID_PROJECT_ID = /^\d{9,10}$/;
  * - "https://www.scratch.mit.edu/projects/1234567890" (con subdominio www)
  * - ".../projects/1234567890/" (con "/" final)
  * - ".../projects/1234567890/editor", ".../projects/1234567890/fullscreen"
+ * - ".../projects/1234567890/editor/", ".../projects/1234567890/fullscreen/"
  *
  * El ID debe tener entre 9 y 10 dígitos.
  * No se aceptan: ID pelado, texto extra, query params, otros dominios
  * ni longitudes de ID fuera de rango. Devuelve null en esos casos.
  */
 const PROJECT_URL_PATTERN =
-  /^https?:\/\/(?:www\.)?scratch\.mit\.edu\/projects\/(\d{9,10})\/?(?:editor|fullscreen)?$/;
+  /^https?:\/\/(?:www\.)?scratch\.mit\.edu\/projects\/(\d{9,10})\/?(?:editor|fullscreen)?\/?$/;
 
 export function extractProjectId(input: string): string | null {
   const normalized = input.trim().toLowerCase();

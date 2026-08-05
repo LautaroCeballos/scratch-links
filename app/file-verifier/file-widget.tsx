@@ -410,11 +410,16 @@ export default function FileVerifierWidget({
           {error && helpLinks}
 
           {valid && (
-            <p className="fv-feedback-success">
-              ¡Archivo verificado!
-              <br />
-              Ahora puedes continuar y realizar la entrega
-            </p>
+            <div className="fv-feedback-success">
+              <span className="fv-feedback-success-icon">
+                <CheckIcon />
+              </span>
+              <p>
+                ¡Archivo verificado!
+                <br />
+                Ahora puedes continuar y realizar la entrega
+              </p>
+            </div>
           )}
           </div>
         </div>

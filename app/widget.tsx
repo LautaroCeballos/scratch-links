@@ -405,11 +405,16 @@ export default function ScratchWidget({
             )}
 
             {success && (
-              <p className="widget__form-success">
-                ¡Proyecto verificado!
-                <br />
-                Puedes continuar hacia la entrega
-              </p>
+              <div className="widget__form-success">
+                <span className="widget__form-success-icon">
+                  <CheckIcon />
+                </span>
+                <p>
+                  ¡Proyecto verificado!
+                  <br />
+                  Puedes continuar hacia la entrega
+                </p>
+              </div>
             )}
           </div>
 
